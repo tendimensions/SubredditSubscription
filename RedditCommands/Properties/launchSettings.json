@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RedditCommands": {
+      "commandName": "Project",
+      "commandLineArgs": "-a count -u hightesseract -p iwmmn!30"
+    }
+  }
+}

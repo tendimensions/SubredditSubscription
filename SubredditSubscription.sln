@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubredditSubscription", "SubredditSubscription\SubredditSubscription.csproj", "{EAABB662-5971-4D45-9A90-F071F821014B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditCommands", "RedditCommands\RedditCommands.csproj", "{B2EDC8D1-43EC-4AEF-B15E-1A63B2E9DB1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EAABB662-5971-4D45-9A90-F071F821014B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAABB662-5971-4D45-9A90-F071F821014B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAABB662-5971-4D45-9A90-F071F821014B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2EDC8D1-43EC-4AEF-B15E-1A63B2E9DB1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2EDC8D1-43EC-4AEF-B15E-1A63B2E9DB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2EDC8D1-43EC-4AEF-B15E-1A63B2E9DB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2EDC8D1-43EC-4AEF-B15E-1A63B2E9DB1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
