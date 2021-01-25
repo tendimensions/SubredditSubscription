@@ -39,6 +39,9 @@ namespace SubredditSubscription
                 case "count":
                     CountSubreddits();
                     return;
+                case "list":
+                    ListSubreddits();
+                    return;
                 default:
                     Console.WriteLine($"Unrecognized action in {options.SettingsFile} file. Values should be 'unsubscribe' or 'copy'");
                     Console.WriteLine("Press any key to continue...");
@@ -48,11 +51,26 @@ namespace SubredditSubscription
 
         }
 
-        private static void CountSubreddits()
+        private static void ListSubreddits()
+        {
+            var account = LogIn(options.PrimaryUser, options.PrimaryPassword);
+            Console.WriteLine("Subscribed subreddits are: ");
+            foreach (var subreddit in account.SubscribedSubreddits.Select(s => new { s.Name, s.Subscribers }))
+            {
+                Console.WriteLine($"{subreddit.Name} \t\t\t subscriber count: {subreddit.Subscribers}");
+            }
+        }
+
+        private static RedditSharp.Things.AuthenticatedUser LogIn(string primaryUser, string primaryPassword)
         {
             var reddit = new Reddit();
-            reddit.LogIn(options.PrimaryUser, options.PrimaryPassword);
-            var account = reddit.User;
+            reddit.LogIn(primaryUser, primaryPassword);
+            return reddit.User;
+        }
+
+        private static void CountSubreddits()
+        {
+            var account = LogIn(options.PrimaryUser, options.PrimaryPassword);
             Console.WriteLine($"Total subscribed subreddits for {options.PrimaryUser} are {account.SubscribedSubreddits.Count()}");
         }
 
