@@ -19,6 +19,7 @@ namespace SubredditSubscription
         public string CopyUser { get;set;}
         [Option('y', "copy_password", Required = false, HelpText = "Password of username copying subreddits to")]
         public string CopyPassword { get;set;}
-
+        [Option('f', "filename", Required = false, HelpText = "Optional settings json file")]
+        public string SettingsFile { get;set;}
     }
 }

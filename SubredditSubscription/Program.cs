@@ -3,33 +3,67 @@ using RedditSharp;
 using System;
 using System.IO;
 using System.Linq;
+using CommandLine;
 
 namespace SubredditSubscription
 {
-    public class Program
+    public static class Program
     {
-        public static string SettingsFile = "settings.json";
+        private static Options options;
+
         public static void Main(string[] args)
         {
-            var settings = GetSettings(SettingsFile);
-            if ("unsubscribe".Equals(settings.Action))
+            Parser.Default.ParseArguments<Options>(args).WithParsed<Options>(o =>
             {
-                UnsubscribeAll(settings.UnsubscribeAllAccount);
-                return;
-            }
-            if (!"copy".Equals(settings.Action))
+                options = o;
+                if (!string.IsNullOrEmpty(o.SettingsFile))
+                {
+                    var settings = GetSettings(o.SettingsFile);
+                    SetOptionsFromSettings(settings);
+                }
+            });
+
+            if (options == null)
             {
-                Console.WriteLine($"Unrecognized action in {SettingsFile} file. Values should be 'unsubscribe' or 'copy'");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey(true);
-                return;
+                Environment.Exit(0);
             }
+
+            switch (options.Action)
+            {
+                case "unsubscribe":
+                    UnsubscribeAll(options.PrimaryUser, options.PrimaryPassword);
+                    return;
+                case "copy":
+                    CopySubreddits();
+                    return;
+                case "count":
+                    CountSubreddits();
+                    return;
+                default:
+                    Console.WriteLine($"Unrecognized action in {options.SettingsFile} file. Values should be 'unsubscribe' or 'copy'");
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey(true);
+                    return;
+            }
+
+        }
+
+        private static void CountSubreddits()
+        {
+            var reddit = new Reddit();
+            reddit.LogIn(options.PrimaryUser, options.PrimaryPassword);
+            var account = reddit.User;
+            Console.WriteLine($"Total subscribed subreddits for {options.PrimaryUser} are {account.SubscribedSubreddits.Count()}");
+        }
+
+        private static void CopySubreddits()
+        {
             var importReddit = new Reddit();
-            importReddit.LogIn(settings.OriginAccount.User, settings.OriginAccount.Password);
+            importReddit.LogIn(options.PrimaryUser, options.PrimaryPassword);
             var importAccount = importReddit.User;
 
             var exportReddit = new Reddit();
-            exportReddit.LogIn(settings.NewAccount.User, settings.NewAccount.Password);
+            exportReddit.LogIn(options.CopyUser, options.CopyPassword);
 
             int totalSubscriptions = importAccount.SubscribedSubreddits.Count();
             int currentSubscription = 0;
@@ -51,15 +85,24 @@ namespace SubredditSubscription
             }
         }
 
-        private static void UnsubscribeAll(Credentials creds)
+        private static void SetOptionsFromSettings(Settings settings)
+        {
+            options.Action = settings.Action;
+            options.PrimaryUser = settings.OriginAccount.User;
+            options.PrimaryPassword = settings.OriginAccount.Password;
+            options.CopyUser = settings.NewAccount.User;
+            options.CopyPassword = settings.NewAccount.Password;
+        }
+
+        private static void UnsubscribeAll(string primaryUser, string primaryPassword)
         {
             var unsubscribeReddit = new Reddit();
-            unsubscribeReddit.LogIn(creds.User, creds.Password);
+            unsubscribeReddit.LogIn(primaryUser, primaryPassword);
             var unsub = unsubscribeReddit.User;
             var total = unsub.SubscribedSubreddits.Count();
             int currentCount = 0;
             var unsubscribeAll = false;
-            Console.WriteLine($"Logged in as {creds.User}...");
+            Console.WriteLine($"Logged in as {primaryUser}...");
             foreach (string subreddit in unsub.SubscribedSubreddits.Select(s => s.Name))
             {
                 currentCount++;
@@ -81,7 +124,8 @@ namespace SubredditSubscription
                             Console.WriteLine("Unrecognized key. Will not unsubscribe and continuing...");
                             continue;
                     }
-                } else
+                }
+                else
                 {
                     UnsubSubreddit(unsubscribeReddit, total, currentCount, subreddit);
                 }
