@@ -1,0 +1,16 @@
+// Action values can be "copy" or "unsubscribe"
+{
+  "Action": "copy",
+  "OriginAccount": {
+    "User": "username",
+    "Password": "password"
+  },
+  "NewAccount": {
+    "User": "username",
+    "Password": "password"
+  },
+  "UnsubscribeAllAccount": {
+    "User": "username",
+    "Password": "password"
+  }
+}
